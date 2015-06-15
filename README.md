@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/jkvalk/quickmox.svg?branch=master)](https://travis-ci.org/jkvalk/quickmox)
-
 [![Coverage Status](https://coveralls.io/repos/jkvalk/quickmox/badge.svg?branch=master)](https://coveralls.io/r/jkvalk/quickmox?branch=master)
 
 # Quickmox

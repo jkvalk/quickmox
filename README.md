@@ -22,7 +22,27 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'quickmox'
+include Quickmox
+
+hostname = 'host1.example.com'
+user = 'root'
+pass = 's3cr3t'
+
+host = Host.new(hostname: hostname, username: user, password: pass).connect
+
+p host.localname
+p host.uptime
+
+host.guests.each do |guest_id|
+    p host.guest_params(guest_id)
+    p host.guest_status(guest_id)
+end if host.is_proxmox?
+
+host.disconnect
+
+```
 
 ## Development
 
@@ -32,5 +52,5 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/quickmox. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/jkvalk/quickmox. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
 

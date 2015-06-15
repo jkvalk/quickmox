@@ -9,25 +9,33 @@ Gem::Specification.new do |spec|
   spec.authors       = ["J.K.Valk"]
   spec.email         = ["jkvalk@mail.ru"]
 
-  spec.summary       = %q{Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{Write a longer description or delete this line.}
-  spec.homepage      = "http://www.example.org"
+  spec.summary       = %q{Quickmox is a Ruby gem for managing Proxmox hosts by SSH screen-scraping techniques.}
+  spec.description   = %q{This is VERY raw, version 1.0.0 is expected to be first usable implementation.}
+  spec.homepage      = "https://github.com/jkvalk/quickmox"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.
-  if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
-  else
-    raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
-  end
+  #if spec.respond_to?(:metadata)
+  #  spec.metadata['allowed_push_host'] = ""
+  #else
+  #  raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
+  #end
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.license = "MIT"
+
   spec.add_development_dependency "bundler", "~> 1.10"
   spec.add_development_dependency "rake", "~> 10.0"
+
+  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "guard"
+  spec.add_development_dependency "guard-rspec"
+  spec.add_development_dependency "coveralls"
+  spec.add_development_dependency "pry"
 
   spec.add_dependency "net-ssh", "~> 2.9"
   spec.add_dependency "awesome_print", '~> 1.6'

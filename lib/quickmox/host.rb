@@ -4,6 +4,7 @@ require 'resolv'
 
 module Quickmox
 
+
 # This class represents a SSH server host. It may or may not be
 # connected to a Proxmox server. If it's not, proxmox specific 
 # methods like guests(), guest_params() etc. will return empty

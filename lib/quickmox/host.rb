@@ -28,7 +28,7 @@ module Quickmox
       begin
         @ip = Resolv.getaddress(@hostname)
       rescue => e
-        @ip = ''
+        @ip = String.new
       end
     end
 
@@ -82,7 +82,7 @@ module Quickmox
     # Returns guest status (running/stopped/NA)
     # * +guest_id+ numeric ID of the guest
     def guest_status(guest_id)
-      status = ''
+      status = String.new
       handle_exceptions do
         status = session.exec!("qm status #{guest_id}")
       end
@@ -100,7 +100,7 @@ module Quickmox
     #    h = guest_params(100)
     #    h = guest_params("101")
     def guest_params(guest_id)
-      params = {}
+      params = Hash.new
       handle_exceptions do
         session.exec!("qm config #{guest_id}").split("\n").each do |line|
           if line =~ /net0:.*=([0-9A-Fa-f:]{17}),/
@@ -128,7 +128,7 @@ module Quickmox
 
     # Returns an array of guest IDs on this host
     def guests
-      guests = []
+      guests = Array.new
       table = handle_exceptions { session.exec!('qm list') }
       lines = table.split("\n")
       lines.each do |line|

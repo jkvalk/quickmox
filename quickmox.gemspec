@@ -38,7 +38,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry"
 
   spec.add_dependency "net-ssh", "~> 2.9"
-  spec.add_dependency "awesome_print", '~> 1.6'
-
 
 end

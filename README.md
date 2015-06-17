@@ -37,9 +37,12 @@ host = Host.new(hostname: hostname, username: user, password: pass).connect
 p host.localname
 p host.uptime
 
-host.guests.each do |guest_id|
-    p host.guest_params(guest_id)
-    p host.guest_status(guest_id)
+host.guests.each do |guest|
+    guest.scan
+    p guest.status
+    guest.params.keys.each do |key|
+        puts "#{key}: #{guest.params[key]}"
+    end
 end if host.is_proxmox?
 
 host.disconnect

@@ -32,7 +32,9 @@ hostname = 'host1.example.com'
 user = 'root'
 pass = 's3cr3t'
 
-host = Host.new(hostname: hostname, username: user, password: pass).connect
+host = Host.new(hostname: hostname, username: user, password: pass)
+    .connect
+    .scan
 
 p host.localname
 p host.uptime

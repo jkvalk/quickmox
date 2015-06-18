@@ -33,13 +33,7 @@ module Quickmox
 
     def connect
       begin
-        @session = Net::SSH.start(hostname,
-                                  username,
-                                  password: password,
-                                  auth_methods: %w(password),
-                                  number_of_password_prompts: 0,
-                                  timeout: 3)
-
+        @session = SSHTransport.new(hostname, username, password)
       rescue => e
         raise HostError, "Warning: exception while connecting to host #{hostname}: #{e}"
       end

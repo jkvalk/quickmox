@@ -98,7 +98,11 @@ describe 'Host' do
   end
 
   it 'should disconnect'do
-    Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar').connect.disconnect
+    Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar').connect.close
+  end
+
+  it 'should know if it is proxmox host' do
+    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar').connect.is_proxmox?).to eq(true)
   end
 
 end

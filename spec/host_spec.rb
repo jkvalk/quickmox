@@ -43,6 +43,13 @@ class SSHTransport
           sockets: 1
           virtio0: local:100/vm-100-disk-1.qcow2,format=qcow2,size=10G
         EOT
+      when /qm status [0-9]{1,9}/
+        return 'status: running'
+      when /qm (start|stop) [0-9]{1,9}/
+        return ''
+      when /qm set ([0-9]{1,9}) (-[0-9a-z]{1,999}) (.*)/
+        return "update VM #{$1} #{$2} #{$3}"
+
     end
 
   end
@@ -58,7 +65,7 @@ describe 'Host' do
   it 'should initialize and connect' do
 
     h = Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar').connect
-    expect(h).to be_an_instance_of(Quickmox::Host)
+    expect(h).to be_an_instance_of(Host)
   end
 
   it 'should get local hostname' do
@@ -81,6 +88,34 @@ describe 'Host' do
       expect(guest.scan.params).to be_an_instance_of(Hash)
       expect(guest.params).to_not be_empty
     end
+  end
+
+  it 'should show status' do
+    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar')
+        .connect.scan.guests.first.status).to eq('running')
+  end
+
+  it 'should start and stop' do
+    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar')
+               .connect.scan.guests.first.stop).to eq('')
+
+    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar')
+               .connect.scan.guests.first.start).to eq('')
+  end
+
+  it 'should set a parameter' do
+    expect {Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar')
+               .connect.scan.guests.first.set_param('memory', '128')}.to_not raise_error
+  end
+
+  it 'should rescan' do
+    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar')
+              .connect.rescan).to be_an_instance_of(Host)
+  end
+
+  it 'should get guest name' do
+    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar')
+               .connect.scan.guests.first.scan.name).to eq('gwclient-2')
   end
 
 end

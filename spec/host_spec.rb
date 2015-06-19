@@ -63,7 +63,7 @@ describe 'Host' do
   it 'should have guests data' do
     Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar').connect.scan.guests.each do |guest|
       expect(guest.id).to match(/[0-9]{1,9}/)
-      expect(guest.scan.params).to be_an_instance_of(Hash)
+      expect(guest.rescan.params).to be_an_instance_of(Hash)
       expect(guest.params).to_not be_empty
     end
   end

@@ -36,7 +36,7 @@ module Quickmox
     end
 
     def scan
-      host.exec("qm config #{id}").split("\n").each do |line|
+      config_lines.each do |line|
         case line
           when /net0:.*=([0-9A-Fa-f:]{17}),/
             params[:mac] = $1
@@ -58,6 +58,12 @@ module Quickmox
         end
       end
       self
+    end
+
+    private
+
+    def config_lines
+      host.exec("qm config #{id}").split("\n")
     end
   end
 end

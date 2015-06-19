@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/jkvalk/quickmox.svg?branch=master)](https://travis-ci.org/jkvalk/quickmox)
 [![Gem Version](https://badge.fury.io/rb/quickmox.svg)](http://badge.fury.io/rb/quickmox)
 [![Coverage Status](https://coveralls.io/repos/jkvalk/quickmox/badge.svg?branch=master)](https://coveralls.io/r/jkvalk/quickmox?branch=master)
+[![Code Climate](https://codeclimate.com/github/jkvalk/quickmox/badges/gpa.svg)](https://codeclimate.com/github/jkvalk/quickmox)
 
 # Quickmox
 

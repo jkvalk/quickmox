@@ -43,14 +43,10 @@ module Quickmox
             params[:mac] = params[:mac].gsub(':', '').downcase
           when /cores: ([0-9]{1,3})/
             params[:cores] = $1
-          when /bootdisk: (.*)/
-            params[:bootdisk] = $1
-          when /description: (.*)/
-            params[:description] = $1
+          when /(description|name|bootdisk): (.*)/
+            params[$1.to_sym] = $2
           when /memory: ([0-9]{1,6})/
             params[:memory] = $1
-          when /name: (.*)/
-            params[:name] = $1
           when /onboot: ([0-9])/
             params[:onboot] = $1
           when /(scsi|virtio|ide)[0-9]{1,3}: .*size=([0-9]{1,3}[MGTK])/

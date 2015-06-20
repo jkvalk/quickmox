@@ -17,6 +17,6 @@ describe Guestlist do
   end
 
   it 'should scan' do
-    expect(@guestlist.scan).to be_a_kind_of(Guestlist)
+    expect(@guestlist.rescan).to be_a_kind_of(Guestlist)
   end
 end

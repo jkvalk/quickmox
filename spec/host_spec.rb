@@ -3,9 +3,10 @@ require 'rspec'
 describe 'Host' do
 
   before(:each) do
-    @fake_ssh_transport = double(SSHTransport)
+    @fake_ssh_transport = double(SSHTransport, host: '127.0.0.1')
 
     allow(@fake_ssh_transport).to receive(:close)
+    allow(@fake_ssh_transport).to receive(:connect).and_return(@fake_ssh_transport)
 
     allow(@fake_ssh_transport).to receive(:exec!).with('hostname').and_return('host1')
     allow(@fake_ssh_transport).to receive(:exec!).with(/qm status [0-9]{1,9}/).and_return('status: running')
@@ -41,27 +42,31 @@ describe 'Host' do
     allow(SSHTransport).to receive(:new).and_return(@fake_ssh_transport)
   end
 
+
   it 'should initialize and connect' do
-    h = Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar').connect
-    expect(h).to be_an_instance_of(Host)
+    expect(
+        Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar')).connect
+    ).to be_an_instance_of(Host)
   end
+
 
   it 'should get local hostname' do
-    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar').connect.localname).to eq('host1')
+    expect(Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar')).connect.localname).to eq('host1')
   end
 
+
   it 'should get uptime' do
-    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar').connect.uptime)
+    expect(Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar')).connect.uptime)
         .to eq(' 17:55:58 up  7:41,  3 users,  load average: 0.64, 0.33, 0.26')
   end
 
   it 'should scan' do
-    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar').connect.scan.guests).to be_instance_of(Guestlist)
-    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar').connect.scan.guests).to_not be_empty
+    expect(Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar')).connect.scan.guests).to be_instance_of(Guestlist)
+    expect(Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar')).connect.scan.guests).to_not be_empty
   end
 
   it 'should have guests data' do
-    Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar').connect.scan.guests.each do |guest|
+    Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar')).connect.scan.guests.each do |guest|
       expect(guest.id).to match(/[0-9]{1,9}/)
       expect(guest.rescan.params).to be_an_instance_of(Hash)
       expect(guest.params).to_not be_empty
@@ -70,39 +75,39 @@ describe 'Host' do
 
 
   it 'should show status' do
-    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar')
+    expect(Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar'))
                .connect.scan.guests.first.status).to eq('running')
   end
 
   it 'should start and stop' do
-    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar')
+    expect(Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar'))
                .connect.scan.guests.first.stop).to eq('')
 
-    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar')
+    expect(Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar'))
                .connect.scan.guests.first.start).to eq('')
   end
 
   it 'should set a parameter' do
-    expect { Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar')
+    expect { Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar'))
                  .connect.scan.guests.first.set_param('memory', '128') }.to_not raise_error
   end
 
   it 'should rescan' do
-    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar')
+    expect(Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar'))
                .connect.rescan).to be_an_instance_of(Host)
   end
 
   it 'should get guest name' do
-    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar')
+    expect(Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar'))
                .connect.scan.guests.first.scan.name).to eq('gwclient-2')
   end
 
-  it 'should disconnect'do
-    Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar').connect.close
+  it 'should disconnect' do
+    Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar')).connect.close
   end
 
   it 'should know if it is proxmox host' do
-    expect(Host.new(hostname: '127.0.0.1', username: 'foo', password: 'bar').connect.is_proxmox?).to eq(true)
+    expect(Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar')).connect.is_proxmox?).to eq(true)
   end
 
 end

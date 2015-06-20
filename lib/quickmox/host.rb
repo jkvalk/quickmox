@@ -19,25 +19,21 @@ module Quickmox
                   :session,
                   :guests
 
-    def initialize(opts = {})
-      @hostname = opts[:hostname]
-      @username = opts[:username]
-      @password = opts[:password]
+    def initialize(transport)
+      @session = transport
+      @guests = Guestlist.new
+
       begin
-        @ip = Resolv.getaddress(@hostname)
+        @ip = Resolv.getaddress(@session.host)
       rescue => e
         @ip = String.new
       end
-      @guests = Guestlist.new
     end
 
     def connect
-      begin
-        @session = SSHTransport.new(hostname, username, password)
-      rescue => e
-        raise HostError, "Warning: exception while connecting to host #{hostname}: #{e}"
-      end
+      @session.connect
       self
+
     end
 
     def rescan
@@ -53,7 +49,7 @@ module Quickmox
 
     def guestlist
       list = Array.new
-      table = handle_exceptions { session.exec!('qm list') }
+      table = session.exec!('qm list')
       lines = table.split("\n")
       lines.each do |line|
         if line =~ /^ *([0-9]{1,4}) */
@@ -64,15 +60,11 @@ module Quickmox
     end
 
     def localname
-      handle_exceptions do
         session.exec!('hostname').chomp
-      end
     end
 
     def uptime
-      handle_exceptions do
         session.exec!('uptime').chomp
-      end
     end
 
     def close
@@ -80,33 +72,18 @@ module Quickmox
     end
 
     def disconnect
-      begin
         session.close
-      rescue => e
-        raise HostError, "Warning: exception while disconnecting from host #{hostname}: #{e.to_s}"
-      end
     end
 
     def is_proxmox?
-      handle_exceptions do
         output = session.exec!('qm list')
         (output =~ /VMID NAME/) ? true : false
-      end
     end
 
     def exec(cmd)
-      handle_exceptions do
-        return session.exec!(cmd).chomp
-      end
+      session.exec!(cmd).chomp
     end
 
-    private
-    def handle_exceptions
-      begin
-        yield
-      rescue => e
-        raise HostError, "Exception while talking to host #{hostname}: #{e.to_s}"
-      end
-    end
+
   end
 end

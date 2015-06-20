@@ -2,23 +2,50 @@ module Quickmox
 
   class SSHTransport
 
-    attr_accessor :session
+    class SSHTransportError < StandardError
+    end
+
+    attr_accessor :session, :host, :user, :pass
 
     def initialize(host, user, pass)
-      @session = Net::SSH.start(host,
-                                user,
-                                password: pass,
-                                auth_methods: %w(password),
-                                number_of_password_prompts: 0,
-                                timeout: 3)
+      @host = host
+      @user = user
+      @pass = pass
+    end
+
+    def connect
+      handle_exceptions do
+        @session = Net::SSH.start(host,
+                                  user,
+                                  password: pass,
+                                  auth_methods: %w(password),
+                                  number_of_password_prompts: 0,
+                                  timeout: 3)
+      end
+      self
     end
 
     def close
-      session.close
+      handle_exceptions do
+        session.close
+      end
     end
 
     def exec!(cmd)
-      session.exec!(cmd).chomp
+      handle_exceptions do
+        session.exec!(cmd).chomp
+      end
+
+    end
+
+    private
+
+    def handle_exceptions
+      begin
+        yield
+      rescue => e
+        raise SSHTransportError, "Exception while talking to host #{host}: #{e}"
+      end
     end
 
   end

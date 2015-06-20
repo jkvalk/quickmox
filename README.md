@@ -29,11 +29,7 @@ Or install it yourself as:
 require 'quickmox'
 include Quickmox
 
-hostname = 'host1.example.com'
-user = 'root'
-pass = 's3cr3t'
-
-host = Host.new(hostname: hostname, username: user, password: pass)
+host = Host.new( SSHTransport.new('hostname','username','password') )
     .connect
     .scan
 

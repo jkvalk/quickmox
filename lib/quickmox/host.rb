@@ -33,7 +33,6 @@ module Quickmox
     def connect
       @session.connect
       self
-
     end
 
     def rescan

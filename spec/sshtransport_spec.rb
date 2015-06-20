@@ -10,6 +10,8 @@ describe 'SSHTransport' do
     allow(@fake_session).to receive(:exec!).and_return('output')
     allow(@fake_session).to receive(:close)
 
+
+
   end
 
   it 'should initialize and connect' do
@@ -23,5 +25,12 @@ describe 'SSHTransport' do
 
   it 'should close' do
     expect(SSHTransport.new('','','').connect.close).to eq(nil)
+  end
+
+  it 'should raise SSHTransportError' do
+
+    allow(@fake_session).to receive(:close).and_raise(StandardError)
+
+    expect{SSHTransport.new('','','').connect.close}.to raise_error(SSHTransport::SSHTransportError)
   end
 end

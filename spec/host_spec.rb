@@ -40,6 +40,9 @@ describe 'Host' do
                                   EOT
                                   )
     allow(SSHTransport).to receive(:new).and_return(@fake_ssh_transport)
+
+    allow(Resolv).to receive(:getaddress).and_return('127.0.0.1')
+
   end
 
 
@@ -108,6 +111,16 @@ describe 'Host' do
 
   it 'should know if it is proxmox host' do
     expect(Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar')).connect.is_proxmox?).to eq(true)
+  end
+
+  it 'should know its own IP' do
+    expect(Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar')).ip).to eq('127.0.0.1')
+  end
+
+  it 'should have an empty IP' do
+    allow(Resolv).to receive(:getaddress).and_raise(StandardError)
+
+    expect(Host.new(SSHTransport.new('127.0.0.1', 'foo', 'bar')).ip).to eq('')
   end
 
 end

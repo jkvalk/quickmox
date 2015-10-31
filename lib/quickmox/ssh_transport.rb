@@ -20,7 +20,8 @@ module Quickmox
                                   password: pass,
                                   auth_methods: %w(password),
                                   number_of_password_prompts: 0,
-                                  timeout: 3)
+                                  timeout: 3,
+                                  paranoid: false)
       end
       self
     end

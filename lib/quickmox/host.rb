@@ -41,8 +41,9 @@ module Quickmox
 
     def scan
       guestlist.each do |id|
-        @guests << Guest.new(id, self)
+        guests << Guest.new(id, self)
       end
+      @guests.scan
       self
     end
 

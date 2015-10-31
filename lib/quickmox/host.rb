@@ -96,7 +96,7 @@ module Quickmox
       begin
         yield
       rescue => e
-        raise HostError, "Exception" #" in Quickmox::Host while handling host #{@session.host}: #{e}"
+        raise HostError, "Exception in Quickmox::Host while handling host #{@session.host}: #{e}"
       end
     end
 

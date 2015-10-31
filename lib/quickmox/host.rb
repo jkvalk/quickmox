@@ -31,7 +31,7 @@ module Quickmox
     end
 
     def connect
-      @session.connect
+      handle_exceptions { @session.connect }
       self
     end
 
@@ -40,50 +40,65 @@ module Quickmox
     end
 
     def scan
-      guestlist.each do |id|
-        @guests << Guest.new(id, self)
+      handle_exceptions do
+        guestlist.each do |id|
+          @guests << Guest.new(id, self)
+        end
+        @guests.scan
       end
-      @guests.scan
       self
     end
 
     def guestlist
-      list = Array.new
-      table = session.exec!('qm list')
-      lines = table.split("\n")
-      lines.each do |line|
-        if line =~ /^ *([0-9]{1,4}) */
-          list << $1
+      list = String.new
+      handle_exceptions do
+        list = Array.new
+        table = session.exec!('qm list')
+        lines = table.split("\n")
+        lines.each do |line|
+          if line =~ /^ *([0-9]{1,4}) */
+            list << $1
+          end
         end
       end
       list
     end
 
     def localname
-        session.exec!('hostname').chomp
+      handle_exceptions { session.exec!('hostname').chomp }
     end
 
     def uptime
-        session.exec!('uptime').chomp
+      handle_exceptions { session.exec!('uptime').chomp }
     end
 
     def close
-      disconnect
+      handle_exceptions { disconnect }
     end
 
     def disconnect
-        session.close
+      handle_exceptions { session.close }
     end
 
     def is_proxmox?
-        output = session.exec!('qm list')
+        output = String.new
+        handle_exceptions { output = session.exec!('qm list') }
         (output =~ /VMID NAME/) ? true : false
     end
 
     def exec(cmd)
-      session.exec!(cmd).chomp
+      handle_exceptions {session.exec!(cmd).chomp}
     end
 
+    private
+
+    def handle_exceptions
+      begin
+        yield
+      rescue => e
+        raise HostError, "Exception" #" in Quickmox::Host while handling host #{@session.host}: #{e}"
+      end
+    end
 
   end
 end

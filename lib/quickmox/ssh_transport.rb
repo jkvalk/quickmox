@@ -36,7 +36,6 @@ module Quickmox
       handle_exceptions do
         session.exec!(cmd).chomp
       end
-
     end
 
     private

@@ -87,7 +87,7 @@ module Quickmox
     end
 
     def exec(cmd)
-      handle_exceptions { session.exec!(cmd).to_s.chomp }
+      handle_exceptions { session.exec!(cmd) }
     end
 
     private

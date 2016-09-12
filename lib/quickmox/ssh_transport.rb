@@ -34,7 +34,7 @@ module Quickmox
 
     def exec!(cmd)
       handle_exceptions do
-        session.exec!(cmd).chomp
+        session.exec!(cmd).to_s.chomp
       end
     end
 

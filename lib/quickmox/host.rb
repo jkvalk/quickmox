@@ -53,7 +53,7 @@ module Quickmox
       list = String.new
       handle_exceptions do
         list = Array.new
-        table = session.exec!('qm list')
+        table = exec('qm list')
         lines = table.split("\n")
         lines.each do |line|
           if line =~ /^ *([0-9]{1,4}) */
@@ -65,11 +65,11 @@ module Quickmox
     end
 
     def localname
-      handle_exceptions { session.exec!('hostname').chomp }
+      handle_exceptions { exec('hostname') }
     end
 
     def uptime
-      handle_exceptions { session.exec!('uptime').chomp }
+      handle_exceptions { exec('uptime') }
     end
 
     def close
@@ -82,12 +82,12 @@ module Quickmox
 
     def is_proxmox?
         output = String.new
-        handle_exceptions { output = session.exec!('qm list') }
+        handle_exceptions { output = exec('qm list') }
         (output =~ /VMID NAME/) ? true : false
     end
 
     def exec(cmd)
-      handle_exceptions {session.exec!(cmd).chomp}
+      handle_exceptions { session.exec!(cmd).to_s.chomp }
     end
 
     private

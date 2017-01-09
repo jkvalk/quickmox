@@ -56,7 +56,7 @@ module Quickmox
         table = exec('qm list')
         lines = table.split("\n")
         lines.each do |line|
-          if line =~ /^ *([0-9]{1,4}) */
+          if line =~ /^ *([0-9]{1,6}) */
             list << $1
           end
         end
